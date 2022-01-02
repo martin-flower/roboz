@@ -1,0 +1,6 @@
+readTimeout: 10s
+writeTimeout: 30s
+idleTimeout: 70s
+host: localhost:5000
+port: 5000
+algorithm: intmap # or sortedset or simplest

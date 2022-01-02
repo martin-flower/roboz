@@ -1,0 +1,142 @@
+basePath: /
+definitions:
+  handlers.Command:
+    properties:
+      direction:
+        type: string
+      steps:
+        type: integer
+    type: object
+  handlers.Coordinate:
+    properties:
+      x:
+        type: integer
+      "y":
+        type: integer
+    type: object
+  handlers.EnterPost:
+    properties:
+      commands:
+        items:
+          $ref: '#/definitions/handlers.Command'
+        type: array
+      commmands:
+        description: according to the specification
+        items:
+          $ref: '#/definitions/handlers.Command'
+        type: array
+      start:
+        $ref: '#/definitions/handlers.Coordinate'
+    type: object
+  handlers.EnterResponse:
+    properties:
+      commands:
+        description: note specification is for commmands, not commands
+        type: integer
+      duration:
+        type: number
+      id:
+        type: integer
+      result:
+        type: integer
+      timestamp:
+        type: string
+    type: object
+  handlers.ListResponse:
+    properties:
+      commands:
+        description: note specification is for commmands, not commands
+        type: integer
+      duration:
+        type: number
+      id:
+        type: integer
+      result:
+        type: integer
+      timestamp:
+        type: string
+    type: object
+host: localhost:5000
+info:
+  contact:
+    email: gokonsulten@gmail.com
+    name: Martin Flower
+  description: example restful implementation of developer test task
+  title: roboz cleaner
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: returns 200 if service is healthy (shallow health)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: ""
+      summary: service health status
+      tags:
+      - health check
+  /list:
+    get:
+      description: list of cleanings - one row per cleaning - in ascending order
+      parameters:
+      - description: how many cleanings to skip - defaults to 0
+        in: query
+        name: offset
+        type: integer
+      - description: maximum number of cleanings - defaults to 10 - maximum is 20
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of instructions
+          schema:
+            $ref: '#/definitions/handlers.ListResponse'
+        "400":
+          description: ok
+          schema:
+            type: string
+        "500":
+          description: ok
+          schema:
+            type: string
+      summary: return list of cleanings
+      tags:
+      - list
+  /tibber-developer-test/enter-path:
+    post:
+      consumes:
+      - application/json
+      description: post instructions as robot path, return 200 and some interesting
+        results
+      parameters:
+      - description: instructions
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.EnterPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: result of instructions
+          schema:
+            $ref: '#/definitions/handlers.EnterResponse'
+        "400":
+          description: ok
+          schema:
+            type: string
+        "500":
+          description: ok
+          schema:
+            type: string
+      summary: post cleaning instructions
+      tags:
+      - enter
+swagger: "2.0"

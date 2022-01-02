@@ -1,0 +1,215 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "example restful implementation of developer test task",
+        "title": "roboz cleaner",
+        "contact": {
+            "name": "Martin Flower",
+            "email": "gokonsulten@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:5000",
+    "basePath": "/",
+    "paths": {
+        "/health": {
+            "get": {
+                "description": "returns 200 if service is healthy (shallow health)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health check"
+                ],
+                "summary": "service health status",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/list": {
+            "get": {
+                "description": "list of cleanings - one row per cleaning - in ascending order",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "list"
+                ],
+                "summary": "return list of cleanings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "how many cleanings to skip - defaults to 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "maximum number of cleanings - defaults to 10 - maximum is 20",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of instructions",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tibber-developer-test/enter-path": {
+            "post": {
+                "description": "post instructions as robot path, return 200 and some interesting results",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enter"
+                ],
+                "summary": "post cleaning instructions",
+                "parameters": [
+                    {
+                        "description": "instructions",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.EnterPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "result of instructions",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.EnterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.Command": {
+            "type": "object",
+            "properties": {
+                "direction": {
+                    "type": "string"
+                },
+                "steps": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handlers.Coordinate": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handlers.EnterPost": {
+            "type": "object",
+            "properties": {
+                "commands": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handlers.Command"
+                    }
+                },
+                "commmands": {
+                    "description": "according to the specification",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handlers.Command"
+                    }
+                },
+                "start": {
+                    "$ref": "#/definitions/handlers.Coordinate"
+                }
+            }
+        },
+        "handlers.EnterResponse": {
+            "type": "object",
+            "properties": {
+                "commands": {
+                    "description": "note specification is for commmands, not commands",
+                    "type": "integer"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "result": {
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.ListResponse": {
+            "type": "object",
+            "properties": {
+                "commands": {
+                    "description": "note specification is for commmands, not commands",
+                    "type": "integer"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "result": {
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
