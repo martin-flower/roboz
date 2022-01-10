@@ -55,7 +55,7 @@ func CommandsTest(t *testing.T, cleaner service.Cleaner, total int) {
 	cleaned := cleaner.Clean(start, commands)
 
 	// approximate assertion for random data
-	assert.Greater(t, cleaned, 10000*total)
+	assert.Greater(t, cleaned, 500*total)
 }
 
 // GetRandomStart returns random coordinate in range (100000,100000) - (-100000,-100000)
@@ -67,6 +67,7 @@ func GetRandomStart() service.Coordinate {
 // GetCommandsWithRandomSteps returns the requested number of commands
 // each containing between 0 and 100000 steps
 func GetCommandsWithRandomSteps(total int) (commands []service.Command) {
+	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < total; i++ {
 		command := service.Command{}
 		command.Direction = direction.GetDirections()[rand.Intn(3)]
