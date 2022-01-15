@@ -8,23 +8,12 @@ import (
 
 type Cleaner struct{}
 
-var parallelc int
-var perpendicularc int
-var checkpoints1 int
-var checkpoints0 int
-var quadrantc int
-var sameverticalc int
-var samehorizontalc int
-
 // Clean implementation using intersections of lines
 // Load all the lines from the commands
 // Count the number of points where the lines crossor touch each other
 func (c Cleaner) Clean(start service.Coordinate, commands []service.Command) (cleaned int) {
 
 	length, intersections := getLengthAndIntersectionsForCommands(start, commands)
-
-	zap.S().Infof("parallel:%d, perpendicular:%d, quadrantc:%d, sameverticalc:%d, samehorizontalc:%d, checkpoints0:%d, checkpoints1:%d", parallelc, perpendicularc, quadrantc, sameverticalc, samehorizontalc, checkpoints0, checkpoints1)
-
 	cleaned = length - intersections
 	zap.S().Infof("cleaned:%d, length:%d, intersections:%d", cleaned, length, intersections)
 
@@ -44,11 +33,17 @@ func getLengthAndIntersectionsForCommands(start service.Coordinate, commands []s
 	return
 }
 
+type void struct{}
+
 func getIntersectionsForLines(lines []line) (intersections int) {
-	intersectionsMap := make(map[int][]int, 10000*len(lines))
-	for lineIndex := 0; lineIndex < len(lines)-1; lineIndex++ {
-		zap.S().Debugf("checking line %d of %d for intersections", lineIndex+1, len(lines))
-		getIntersection(intersectionsMap, lineIndex+1, lines[lineIndex], lines[lineIndex+1:])
+	intersectionsMap := make(map[int]map[int16]void)
+	for lineIndex := int16(0); lineIndex < int16(len(lines)-1); lineIndex++ {
+		if lineIndex%100 == 0 {
+			zap.S().Infof("checking line %d of %d for intersections", lineIndex+1, len(lines))
+		} else {
+			zap.S().Debugf("checking line %d of %d for intersections", lineIndex+1, len(lines))
+		}
+		getIntersection(intersectionsMap, lineIndex, lines[lineIndex], lines[lineIndex+1:])
 	}
 	for _, lines := range intersectionsMap {
 		intersections = intersections + len(lines)
@@ -56,7 +51,7 @@ func getIntersectionsForLines(lines []line) (intersections int) {
 	return
 }
 
-func getIntersection(intersectionsMap map[int][]int, lineIndex int, line line, lines []line) {
+func getIntersection(intersectionsMap map[int]map[int16]void, lineIndex int16, line line, lines []line) {
 	if len(lines) < 1 {
 		return
 	}
@@ -65,34 +60,29 @@ func getIntersection(intersectionsMap map[int][]int, lineIndex int, line line, l
 	}
 }
 
-func getIntersectionOfTwoLines(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
+func getIntersectionOfTwoLines(intersectionsMap map[int]map[int16]void, lineIndex int16, line1 line, line2 line) {
 	zap.S().Debugf("%v,%v", line1, line2)
 	if parallel(line1, line2) {
-		parallelc++
 		return
 	}
 	if perpendicular(line1, line2) {
-		perpendicularc++
 		return
 	}
 	if line1.Start.X > line2.End.X && line1.Start.Y > line2.End.Y {
-		quadrantc++
 		return
 	}
 	if line1.Start.X == line1.End.X && line1.Start.X == line2.Start.X && line2.Start.X == line2.End.X {
-		sameverticalc++
 		sameVertical(intersectionsMap, lineIndex, line1, line2)
 		return
 	}
 	if line1.Start.Y == line1.End.Y && line1.Start.Y == line2.Start.Y && line2.Start.Y == line2.End.Y {
-		samehorizontalc++
 		sameHorizontal(intersectionsMap, lineIndex, line1, line2)
 		return
 	}
 	checkPoints(intersectionsMap, lineIndex, line1, line2)
 }
 
-func sameHorizontal(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
+func sameHorizontal(intersectionsMap map[int]map[int16]void, lineIndex int16, line1 line, line2 line) {
 	if line1.End.X < line2.Start.X {
 		return
 	}
@@ -104,15 +94,11 @@ func sameHorizontal(intersectionsMap map[int][]int, lineIndex int, line1 line, l
 	end := minn(line1.End.X, line2.End.X)
 
 	for x := start; x <= end; x++ {
-		point := point(x, line1.Start.Y)
-		lineIndexes := intersectionsMap[point]
-		if !contains(lineIndexes, lineIndex) {
-			intersectionsMap[point] = append(lineIndexes, lineIndex)
-		}
+		addPointToIntersectionsMap(intersectionsMap, lineIndex, x, line1.Start.Y)
 	}
 }
 
-func sameVertical(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
+func sameVertical(intersectionsMap map[int]map[int16]void, lineIndex int16, line1 line, line2 line) {
 	if line1.End.Y < line2.Start.Y {
 		return
 	}
@@ -124,16 +110,8 @@ func sameVertical(intersectionsMap map[int][]int, lineIndex int, line1 line, lin
 	end := minn(line1.End.Y, line2.End.Y)
 
 	for y := start; y <= end; y++ {
-		point := point(line1.Start.X, y)
-		lineIndexes := intersectionsMap[point]
-		if !contains(lineIndexes, lineIndex) {
-			update(intersectionsMap, point, lineIndexes, lineIndex)
-		}
+		addPointToIntersectionsMap(intersectionsMap, lineIndex, line1.Start.X, y)
 	}
-}
-
-func update(intersectionsMap map[int][]int, point int, lineIndexes []int, lineIndex int) {
-	intersectionsMap[point] = append(lineIndexes, lineIndex)
 }
 
 func maxx(x, y int) int {
@@ -150,24 +128,16 @@ func minn(x, y int) int {
 	return x
 }
 
-func checkPoints(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
+func checkPoints(intersectionsMap map[int]map[int16]void, lineIndex int16, line1 line, line2 line) {
 
 	// 1:horizontal, 2:vertical
 	if line1.Start.Y == line1.End.Y && line2.Start.X == line2.End.X {
 		if line1.Start.Y <= line2.End.Y && line1.End.X >= line2.Start.X && line1.Start.X <= line2.Start.X {
-			checkpoints1++
 			zap.S().Debugf(" +1 line1:%v,line2:%v", line1, line2)
 			// X from line2, Y from line 1
-			point := point(line2.Start.X, line1.Start.Y)
-			lineIndexes := intersectionsMap[point]
-			if contains(lineIndexes, lineIndex) {
-				return
-			}
-			lineIndexes = append(lineIndexes, lineIndex)
-			intersectionsMap[point] = lineIndexes
+			addPointToIntersectionsMap(intersectionsMap, lineIndex, line2.Start.X, line1.Start.Y)
 			return
 		}
-		checkpoints0++
 		zap.S().Debugf(" +0 line1:%v,line2:%v", line1, line2)
 		return
 	}
@@ -175,19 +145,11 @@ func checkPoints(intersectionsMap map[int][]int, lineIndex int, line1 line, line
 	// 1:vertical, 2:horizontal
 	if line1.Start.X == line1.End.X && line2.Start.Y == line2.End.Y {
 		if line1.Start.X <= line2.End.X && line1.End.Y >= line2.Start.Y && line1.Start.Y <= line2.Start.Y {
-			checkpoints1++
 			zap.S().Debugf(" +1 line1:%v,line2:%v", line1, line2)
 			// X from line1, Y from line2
-			point := point(line1.Start.X, line2.Start.Y)
-			lineIndexes := intersectionsMap[point]
-			if contains(lineIndexes, lineIndex) {
-				return
-			}
-			lineIndexes = append(lineIndexes, lineIndex)
-			intersectionsMap[point] = lineIndexes
+			addPointToIntersectionsMap(intersectionsMap, lineIndex, line1.Start.X, line2.Start.Y)
 			return
 		}
-		checkpoints0++
 		zap.S().Debugf(" +0 line1:%v,line2:%v", line1, line2)
 		return
 	}
@@ -195,13 +157,12 @@ func checkPoints(intersectionsMap map[int][]int, lineIndex int, line1 line, line
 	zap.S().Fatalf("programming error - shouldn't get here")
 }
 
-func contains(numbers []int, number int) bool {
-	for _, n := range numbers {
-		if n == number {
-			return true
-		}
+func addPointToIntersectionsMap(intersectionsMap map[int]map[int16]void, lineIndex int16, x int, y int) {
+	point := point(x, y)
+	if intersectionsMap[point] == nil {
+		intersectionsMap[point] = make(map[int16]void)
 	}
-	return false
+	intersectionsMap[point][lineIndex] = void{}
 }
 
 func perpendicular(line1, line2 line) bool {
@@ -294,11 +255,7 @@ func getLengthAndEnd(lengthSoFar int, start service.Coordinate, command service.
 	return
 }
 
-// point converts coordinates to a 64 bit integer for using as a key in the map.
-// max int64  : -9223372036854775808 to 9223372036854775807
-// squareroot of 9223372036854775807 is 3037000500
-// x, y between -100000 and 100000
-// small enough for int64, but too big for int32
+// point converts coordinates to a single 64 bit integer for using as a key in the map
 func point(x int, y int) int {
 
 	// with inspiration from

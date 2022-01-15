@@ -44,10 +44,13 @@ on **macos**, port 5000 is used for airplay receiver - free up this port by usin
 
 ## comments
 
-* the core algorithm has three alternative implementations - 
-[intmap](web/service/clean/intmap/clean.go) (the one to use), 
-[simplest](web/service/clean/simplest/clean.go) and 
-[sortedset](web/service/clean/sortedset/clean.go)
+* the core algorithm has four alternative implementations - 
+  * [intersection](web/service/clean/intersection/README.md) 
+  * [intmap](web/service/clean/intmap/clean.go) (the one to use) 
+  * [simplest](web/service/clean/simplest/clean.go)
+  * [sortedset](web/service/clean/sortedset/clean.go)
+
+* note that **none of the algorithms performs adequately at scale** - intmap is the one that goes the farthest
 
 ### TODO
 

@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/martin-flower/roboz-web/database"
 	"github.com/martin-flower/roboz-web/service"
+	"github.com/martin-flower/roboz-web/service/clean/intersection"
 	"github.com/martin-flower/roboz-web/service/clean/intmap"
 	"github.com/martin-flower/roboz-web/service/clean/simplest"
 	"github.com/martin-flower/roboz-web/service/clean/sortedset"
@@ -68,6 +69,12 @@ func Enter(ctx *fiber.Ctx) (err error) {
 
 	// algorithm is set in roboz.yaml
 	switch algorithm := viper.GetString("algorithm"); algorithm {
+	case "intersection":
+		zap.S().Debugf("algorithm:intersection")
+		if len(commands) > 10000 {
+			return ctx.Status(fiber.StatusBadRequest).SendString(fmt.Sprintf("intersection algorithm cannot handle more than 10000 commmands (you sent %d)", len(commands)))
+		}
+		cleaner = intersection.Cleaner{}
 	case "intmap":
 		zap.S().Debugf("algorithm:intmap")
 		if len(commands) > 10000 {

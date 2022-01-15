@@ -39,13 +39,28 @@ func Test50Commands(t *testing.T) {
 }
 
 // takes about 3 seconds
-func Test300Command(t *testing.T) {
-	clean.CommandsTest(t, Cleaner{}, 300)
+func Test150Commands(t *testing.T) {
+	clean.CommandsTest(t, Cleaner{}, 150)
+}
+
+// maximum number of commands according to the specification
+// each with random number of steps up to 100000
+// about 30s
+func Test10000Commands(t *testing.T) {
+	t.Skipf("need to run manually with go test -run Test10000Commands -timeout 20h -v")
+	start := clean.GetRandomStart()
+	commands := clean.GetCommandsWithRandomSteps(10000)
+
+	// function under test
+	cleaned := Cleaner{}.Clean(start, commands)
+
+	// no useful assertion with random numbers
+	assert.Greater(t, cleaned, 100000000)
 }
 
 // -- -- --
 
-// about 5s
+// about 3s
 func TestCleanHorizontal5000(t *testing.T) {
 	commands := []service.Command{}
 	for i := 0; i < 5000; i++ {
@@ -132,7 +147,7 @@ func TestGetLengthAndIntersectionsForCommandsLimits(t *testing.T) {
 
 func TestGetIntersection(t *testing.T) {
 
-	intersectionsMap := make(map[int][]int)
+	intersectionsMap := map[int]map[int16]void{}
 	getIntersection(
 		intersectionsMap, 0,
 		line{service.Coordinate{X: 0, Y: 0}, service.Coordinate{X: 0, Y: 0}},
@@ -180,7 +195,7 @@ func TestIntersectionOfTwoLines(t *testing.T) {
 	}
 
 	for index, tc := range tests {
-		intersectionsMap := make(map[int][]int)
+		intersectionsMap := map[int]map[int16]void{}
 		getIntersectionOfTwoLines(
 			intersectionsMap, 0,
 			line{service.Coordinate{X: tc.line1StartX, Y: tc.line1StartY}, service.Coordinate{X: tc.line1EndX, Y: tc.line1EndY}},

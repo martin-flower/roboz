@@ -55,7 +55,7 @@ func CommandsTest(t *testing.T, cleaner service.Cleaner, total int) {
 	cleaned := cleaner.Clean(start, commands)
 
 	// approximate assertion for random data
-	assert.Greater(t, cleaned, 500*total)
+	assert.Greater(t, cleaned, 100*total)
 }
 
 // GetRandomStart returns random coordinate in range (100000,100000) - (-100000,-100000)
