@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 
 func Benchmark(b *testing.B) {
 	start := clean.GetRandomStart()
-	commands := clean.GetCommandsWithRandomSteps(9)
+	commands := clean.GetCommandsWithRandomSteps(200)
 
 	// function under test
 	Cleaner{}.Clean(start, commands)
@@ -39,11 +39,27 @@ func Test50Commands(t *testing.T) {
 }
 
 // takes about 3 seconds
-func Test100Command(t *testing.T) {
-	clean.CommandsTest(t, Cleaner{}, 400)
+func Test300Command(t *testing.T) {
+	clean.CommandsTest(t, Cleaner{}, 300)
 }
 
 // -- -- --
+
+// about 5s
+func TestCleanHorizontal5000(t *testing.T) {
+	commands := []service.Command{}
+	for i := 0; i < 5000; i++ {
+		command := service.Command{}
+		command.Direction = direction.East
+		command.Steps = 11
+		commands = append(commands, command)
+		command = service.Command{}
+		command.Direction = direction.West
+		command.Steps = 10
+		commands = append(commands, command)
+	}
+	assert.Equal(t, 5011, Cleaner{}.Clean(service.Coordinate{X: 0, Y: 0}, commands))
+}
 
 func TestCleanLimits(t *testing.T) {
 
@@ -116,8 +132,9 @@ func TestGetLengthAndIntersectionsForCommandsLimits(t *testing.T) {
 
 func TestGetIntersection(t *testing.T) {
 
-	intersectionsMap := getIntersection(
-		make(map[int][]int), 0,
+	intersectionsMap := make(map[int][]int)
+	getIntersection(
+		intersectionsMap, 0,
 		line{service.Coordinate{X: 0, Y: 0}, service.Coordinate{X: 0, Y: 0}},
 		[]line{
 			{service.Coordinate{X: 0, Y: 0}, service.Coordinate{X: 0, Y: 0}},
@@ -163,8 +180,9 @@ func TestIntersectionOfTwoLines(t *testing.T) {
 	}
 
 	for index, tc := range tests {
-		intersectionsMap := getIntersectionOfTwoLines(
-			make(map[int][]int), 0,
+		intersectionsMap := make(map[int][]int)
+		getIntersectionOfTwoLines(
+			intersectionsMap, 0,
 			line{service.Coordinate{X: tc.line1StartX, Y: tc.line1StartY}, service.Coordinate{X: tc.line1EndX, Y: tc.line1EndY}},
 			line{service.Coordinate{X: tc.line2StartX, Y: tc.line2StartY}, service.Coordinate{X: tc.line2EndX, Y: tc.line2EndY}})
 

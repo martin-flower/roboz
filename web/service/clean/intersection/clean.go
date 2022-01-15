@@ -39,16 +39,16 @@ type line struct {
 func getLengthAndIntersectionsForCommands(start service.Coordinate, commands []service.Command) (length int, intersections int) {
 	var lines = []line{}
 	length, lines = getLengthAndLines(start, commands)
-	zap.S().Debugf("length:%d, lines:%d", length, len(lines))
+	zap.S().Infof("length:%d, lines:%d", length, len(lines))
 	intersections = getIntersectionsForLines(lines)
 	return
 }
 
 func getIntersectionsForLines(lines []line) (intersections int) {
-	intersectionsMap := make(map[int][]int)
+	intersectionsMap := make(map[int][]int, 10000*len(lines))
 	for lineIndex := 0; lineIndex < len(lines)-1; lineIndex++ {
 		zap.S().Debugf("checking line %d of %d for intersections", lineIndex+1, len(lines))
-		intersectionsMap = getIntersection(intersectionsMap, lineIndex+1, lines[lineIndex], lines[lineIndex+1:])
+		getIntersection(intersectionsMap, lineIndex+1, lines[lineIndex], lines[lineIndex+1:])
 	}
 	for _, lines := range intersectionsMap {
 		intersections = intersections + len(lines)
@@ -56,20 +56,17 @@ func getIntersectionsForLines(lines []line) (intersections int) {
 	return
 }
 
-func getIntersection(intersectionsMapIn map[int][]int, lineIndex int, line line, lines []line) (intersectionsMap map[int][]int) {
-	intersectionsMap = intersectionsMapIn
+func getIntersection(intersectionsMap map[int][]int, lineIndex int, line line, lines []line) {
 	if len(lines) < 1 {
 		return
 	}
 	for i := 0; i < len(lines); i++ {
-		intersectionsMap = getIntersectionOfTwoLines(intersectionsMap, lineIndex, line, lines[i])
+		getIntersectionOfTwoLines(intersectionsMap, lineIndex, line, lines[i])
 	}
-	return
 }
 
-func getIntersectionOfTwoLines(intersectionsMapIn map[int][]int, lineIndex int, line1 line, line2 line) (intersectionsMap map[int][]int) {
+func getIntersectionOfTwoLines(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
 	zap.S().Debugf("%v,%v", line1, line2)
-	intersectionsMap = intersectionsMapIn
 	if parallel(line1, line2) {
 		parallelc++
 		return
@@ -84,17 +81,18 @@ func getIntersectionOfTwoLines(intersectionsMapIn map[int][]int, lineIndex int, 
 	}
 	if line1.Start.X == line1.End.X && line1.Start.X == line2.Start.X && line2.Start.X == line2.End.X {
 		sameverticalc++
-		return sameVertical(intersectionsMap, lineIndex, line1, line2)
+		sameVertical(intersectionsMap, lineIndex, line1, line2)
+		return
 	}
 	if line1.Start.Y == line1.End.Y && line1.Start.Y == line2.Start.Y && line2.Start.Y == line2.End.Y {
 		samehorizontalc++
-		return sameHorizontal(intersectionsMap, lineIndex, line1, line2)
+		sameHorizontal(intersectionsMap, lineIndex, line1, line2)
+		return
 	}
-	return checkPoints(intersectionsMap, lineIndex, line1, line2)
+	checkPoints(intersectionsMap, lineIndex, line1, line2)
 }
 
-func sameHorizontal(intersectionsMapIn map[int][]int, lineIndex int, line1 line, line2 line) (intersectionsMap map[int][]int) {
-	intersectionsMap = intersectionsMapIn
+func sameHorizontal(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
 	if line1.End.X < line2.Start.X {
 		return
 	}
@@ -112,11 +110,9 @@ func sameHorizontal(intersectionsMapIn map[int][]int, lineIndex int, line1 line,
 			intersectionsMap[point] = append(lineIndexes, lineIndex)
 		}
 	}
-	return
 }
 
-func sameVertical(intersectionsMapIn map[int][]int, lineIndex int, line1 line, line2 line) (intersectionsMap map[int][]int) {
-	intersectionsMap = intersectionsMapIn
+func sameVertical(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
 	if line1.End.Y < line2.Start.Y {
 		return
 	}
@@ -131,10 +127,13 @@ func sameVertical(intersectionsMapIn map[int][]int, lineIndex int, line1 line, l
 		point := point(line1.Start.X, y)
 		lineIndexes := intersectionsMap[point]
 		if !contains(lineIndexes, lineIndex) {
-			intersectionsMap[point] = append(lineIndexes, lineIndex)
+			update(intersectionsMap, point, lineIndexes, lineIndex)
 		}
 	}
-	return
+}
+
+func update(intersectionsMap map[int][]int, point int, lineIndexes []int, lineIndex int) {
+	intersectionsMap[point] = append(lineIndexes, lineIndex)
 }
 
 func maxx(x, y int) int {
@@ -151,8 +150,7 @@ func minn(x, y int) int {
 	return x
 }
 
-func checkPoints(intersectionsMapIn map[int][]int, lineIndex int, line1 line, line2 line) (intersectionsMap map[int][]int) {
-	intersectionsMap = intersectionsMapIn
+func checkPoints(intersectionsMap map[int][]int, lineIndex int, line1 line, line2 line) {
 
 	// 1:horizontal, 2:vertical
 	if line1.Start.Y == line1.End.Y && line2.Start.X == line2.End.X {
@@ -195,7 +193,6 @@ func checkPoints(intersectionsMapIn map[int][]int, lineIndex int, line1 line, li
 	}
 
 	zap.S().Fatalf("programming error - shouldn't get here")
-	return
 }
 
 func contains(numbers []int, number int) bool {
