@@ -92,7 +92,7 @@ var doc = `{
                 }
             }
         },
-        "/tibber-developer-test/enter-path": {
+        "/developer-test/enter-path": {
             "post": {
                 "description": "post instructions as robot path, return 200 and some interesting results",
                 "consumes": [

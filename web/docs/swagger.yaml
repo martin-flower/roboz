@@ -108,7 +108,7 @@ paths:
       summary: return list of cleanings
       tags:
       - list
-  /tibber-developer-test/enter-path:
+  /developer-test/enter-path:
     post:
       consumes:
       - application/json

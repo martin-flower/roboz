@@ -26,7 +26,7 @@ import (
 // @Success 200 {object} handlers.EnterResponse true "result of instructions"
 // @Failure 400 {string}
 // @Failure 500 {string}
-// @Router /tibber-developer-test/enter-path [post]
+// @Router /developer-test/enter-path [post]
 func Enter(ctx *fiber.Ctx) (err error) {
 
 	zap.S().Debugf("roboz enter - %d", time.Now().UnixMilli())

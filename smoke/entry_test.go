@@ -72,7 +72,7 @@ func (ef *entryFeature) theControllerSendsInstructionsToTheRobot(sent int) (err 
 	}
 
 	var request *http.Request
-	request, err = http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s:%s/tibber-developer-test/enter-path", os.Getenv("roboz_web_host"), os.Getenv("roboz_web_port")), bytes.NewBuffer(tosendJSON))
+	request, err = http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s:%s/developer-test/enter-path", os.Getenv("roboz_web_host"), os.Getenv("roboz_web_port")), bytes.NewBuffer(tosendJSON))
 	request.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return fmt.Errorf("failed to create request %w", err)
@@ -110,7 +110,7 @@ func (ef *entryFeature) theControllerSendsInvalidCommandsToTheRobot() error {
 	}
 
 	var request *http.Request
-	request, err = http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s:%s/tibber-developer-test/enter-path", os.Getenv("roboz_web_host"), os.Getenv("roboz_web_port")), bytes.NewBuffer(tosendJSON))
+	request, err = http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s:%s/developer-test/enter-path", os.Getenv("roboz_web_host"), os.Getenv("roboz_web_port")), bytes.NewBuffer(tosendJSON))
 	request.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return fmt.Errorf("failed to create request %w", err)

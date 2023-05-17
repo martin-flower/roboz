@@ -26,7 +26,7 @@ func New(timeouts config.Timeouts) *Server {
 func (srv Server) Setup() {
 	srv.app.Get("/health", handlers.Health)
 	srv.app.Get("/list", handlers.List)
-	srv.app.Post("/tibber-developer-test/enter-path", handlers.Enter)
+	srv.app.Post("/developer-test/enter-path", handlers.Enter)
 
 	// documentation: default landing page
 	srv.app.Get("/", redirectToSwagger)
