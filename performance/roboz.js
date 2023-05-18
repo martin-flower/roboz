@@ -28,7 +28,7 @@ export default function () {
     },
   };  
 
-  response = http.post(`http://localhost:5000/tibber-developer-test/enter-path`, randomEnterPayload(), params);
+  response = http.post(`http://localhost:5000/developer-test/enter-path`, randomEnterPayload(), params);
   check(response, {
     'enter status 200': r => r.status == 200,
     'enter response time - good enough': r => r.timings.duration < 800, // 800 milliseconds
