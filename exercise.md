@@ -7,7 +7,7 @@ Platform consists of swarm of micro services running as Docker containers. Prima
 Create a new micro service that could fit into the Platform environment as described above. The service will simulate a robot moving in an office space and cleaning the places the robot visits. The path of the robot movement is described by start coordinates and move commands. After the cleaning has been done the robot reports the number of unique places cleaned, the service will store the result into the database and returns the created record in JSON format. The service listens to HTTP protocol on port 5000.
 
 * Request method `POST`
-* Request path: `/developer-test/`enter-path 
+* Request path: `/developer-test/enter-path` 
 
 ## input criteria
 
