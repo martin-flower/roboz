@@ -24,7 +24,7 @@ add this file to .gitignore
 - database port 6432
 - http server port 5000
 
-on **macos**, port 5000 is used for airplay receiver - free up this port by using system preferences to deactivate airplay receiver
+on **macos**, port 5000 is used for airplay receiver - free up this port by using system preferences to deactivate airplay receiver (only applies to recent models - option visible in system preferences)
 
 ## starting
 

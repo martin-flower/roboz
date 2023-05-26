@@ -1,2 +1,4 @@
 web/service/clean/intersection/cpu.out
 web/service/clean/intersection/mem.out
+database/.env
+
