@@ -3,8 +3,8 @@ package httpserver
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
-	"github.com/martin-flower/roboz-web/config"
-	"github.com/martin-flower/roboz-web/handlers"
+	"github.com/martin-flower/roboz-web-go/config"
+	"github.com/martin-flower/roboz-web-go/handlers"
 	"github.com/spf13/viper"
 )
 

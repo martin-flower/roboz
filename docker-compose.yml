@@ -19,12 +19,12 @@ services:
       test: /database/healthcheck.sh
       interval: "10s"
 
-  web:
+  web-go:
     restart: always
     env_file:
       - ./database/.env
     build:
-      context: ./web
+      context: ./web-go
     depends_on:
       - database
     ports:
@@ -39,4 +39,4 @@ services:
       context: ./smoke
     network_mode: "host"  
     depends_on:
-      - web
+      - web-go

@@ -101,7 +101,7 @@ func (ef *entryFeature) theControllerSendsInvalidCommandsToTheRobot() error {
 
 	tosend := enterPost{}
 	tosend.Start = Coordinate{X: 4, Y: 5}
-	tosend.Commands = []Command{Command{Direction: "kkk", Steps: -4}, Command{Direction: "mmm", Steps: 0}}
+	tosend.Commands = []Command{{Direction: "kkk", Steps: -4}, {Direction: "mmm", Steps: 0}}
 
 	tosendJSON, err := json.Marshal(tosend)
 

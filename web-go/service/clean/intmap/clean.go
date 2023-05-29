@@ -1,8 +1,8 @@
 package intmap
 
 import (
-	"github.com/martin-flower/roboz-web/service"
-	"github.com/martin-flower/roboz-web/service/direction"
+	"github.com/martin-flower/roboz-web-go/service"
+	"github.com/martin-flower/roboz-web-go/service/direction"
 	"go.uber.org/zap"
 )
 

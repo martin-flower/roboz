@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/martin-flower/roboz-web/service/clean"
+	"github.com/martin-flower/roboz-web-go/service/clean"
 )
 
 func TestMain(m *testing.M) {

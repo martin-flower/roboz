@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/martin-flower/roboz-web/database"
+	"github.com/martin-flower/roboz-web-go/database"
 	"go.uber.org/zap"
 )
 

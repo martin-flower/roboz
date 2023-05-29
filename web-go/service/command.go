@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"github.com/martin-flower/roboz-web/service/direction"
+	"github.com/martin-flower/roboz-web-go/service/direction"
 )
 
 type Command struct {

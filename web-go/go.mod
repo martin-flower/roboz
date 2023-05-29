@@ -1,4 +1,4 @@
-module github.com/martin-flower/roboz-web
+module github.com/martin-flower/roboz-web-go
 
 go 1.20
 

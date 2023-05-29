@@ -1,6 +1,6 @@
-# docker build --tag roboz-web:minimum --file Dockerfile .
-# docker run --detach --publish 5000:5000 roboz-web:minimum
-# docker run --publish 5000:5000 roboz-web:minimum
+# docker build --tag roboz-web-go:minimum --file Dockerfile .
+# docker run --detach --publish 5000:5000 roboz-web-go:minimum
+# docker run --publish 5000:5000 roboz-web-go:minimum
 
 # multistage build based on example in https://raw.githubusercontent.com/cloud-native-go/examples/main/ch05/ch05_0X_dockerbuild/Dockerfile
 
@@ -38,16 +38,16 @@ WORKDIR /src
 # build the binary
 #  CGO_ENABLED=0 - do not use CGO; compile statically
 #  GOOS=linux    - compile for linux os
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o roboz-web
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o roboz-web-go
 
 # 3 -- -- -- build image
 
 # scratch image contains no distribution files
-# resulting image and containers will have only the roboz-web binary
+# resulting image and containers will have only the roboz-web-go binary
 FROM scratch as image
 
 # copy the binary from the build container
-COPY --from=build /src/roboz-web .
+COPY --from=build /src/roboz-web-go .
 
 # copy the configuration from the build container
 COPY --from=build /src/config/roboz.yaml .
@@ -56,4 +56,4 @@ COPY --from=build /src/config/roboz.yaml .
 EXPOSE 5000
 
 # execute this with docker run
-CMD ["/roboz-web"]
+CMD ["/roboz-web-go"]

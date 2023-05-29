@@ -1,26 +1,29 @@
-package simplest
+package sortedset
 
 import (
-	"github.com/martin-flower/roboz-web/service"
-	"github.com/martin-flower/roboz-web/service/direction"
 	"go.uber.org/zap"
+
+	"github.com/martin-flower/roboz-web-go/service"
+	"github.com/martin-flower/roboz-web-go/service/direction"
+	"github.com/wangjia184/sortedset"
 )
 
 type Cleaner struct{}
 
-// Clean simplest implementation with no optimization. Does not scale.
+// Clean sortedset implementation performs much better than simplest,
+// but does not scale to the edges of the test data.
 func (c Cleaner) Clean(start service.Coordinate, commands []service.Command) (cleaned int) {
 
 	position := start
-	cleanedSoFar := []service.Coordinate{}
+	cleanedSoFar := sortedset.New()
 
 	for _, command := range commands {
 		var cleanedThisCommand = []service.Coordinate{}
 		position, cleanedThisCommand = move(position, command)
 		cleanedSoFar = consolidate(cleanedSoFar, cleanedThisCommand)
 	}
-	zap.S().Infof("finishing at %v", position)
-	cleaned = len(cleanedSoFar)
+	zap.S().Infof("finishing at %+v", position)
+	cleaned = cleanedSoFar.GetCount()
 	return
 }
 
@@ -59,30 +62,16 @@ func move(from service.Coordinate, command service.Command) (to service.Coordina
 			zap.S().Errorf("programming error, unsupported direction %", command.Direction)
 		}
 	}
-
 	zap.S().Debugf("moved to %v", to)
 	return
 }
 
 // add c2 service.Coordinates to c1 provided the c2 service.Coordinate does not exist in c1
 // return the consolidated service.Coordinates
-func consolidate(c1s []service.Coordinate, c2s []service.Coordinate) (consolidated []service.Coordinate) {
+func consolidate(c1s *sortedset.SortedSet, c2s []service.Coordinate) (consolidated *sortedset.SortedSet) {
 	consolidated = c1s
 	for _, c2 := range c2s {
-		if !contains(c1s, c2) {
-			consolidated = append(consolidated, c2)
-		}
+		consolidated.AddOrUpdate(c2.Key(), sortedset.SCORE(c2.X+c2.Y), c2)
 	}
 	return
-}
-
-func contains(coordinates []service.Coordinate, item service.Coordinate) bool {
-	for _, coordinate := range coordinates {
-		if coordinate == item {
-			zap.S().Debugf("c1s contains c2 - %v, %v", coordinates, item)
-			return true
-		}
-	}
-	zap.S().Debugf("c1s does not contain c2 - %v, %v", coordinates, item)
-	return false
 }

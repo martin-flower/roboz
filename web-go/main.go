@@ -4,11 +4,11 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/martin-flower/roboz-web/config"
-	"github.com/martin-flower/roboz-web/database"
-	swagger "github.com/martin-flower/roboz-web/docs"
-	"github.com/martin-flower/roboz-web/httpserver"
-	"github.com/martin-flower/roboz-web/logger"
+	"github.com/martin-flower/roboz-web-go/config"
+	"github.com/martin-flower/roboz-web-go/database"
+	swagger "github.com/martin-flower/roboz-web-go/docs"
+	"github.com/martin-flower/roboz-web-go/httpserver"
+	"github.com/martin-flower/roboz-web-go/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
