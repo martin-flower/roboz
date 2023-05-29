@@ -5,7 +5,7 @@ example restful implementation of developer [exercise](exercise.md)
 implemented in three containers:
 
 1. **database** - implemented using postgres
-1. **web** - restful http server implemented in go & fiber
+1. **web-go** - restful http server implemented in go & fiber
 1. **smoke** - post deploy end-to-end smoke tests (container runs and exits) - see [README.md](smoke/README.md)
 
 ## configuration
