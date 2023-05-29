@@ -1,7 +1,7 @@
 # docker build --tag roboz-smoke:latest .
 # docker run -it --network=host roboz-smoke:latest
 
-FROM golang:1.17.5
+FROM golang:1.20.4
 
 WORKDIR /smoke
 
