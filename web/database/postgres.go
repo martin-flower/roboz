@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -15,7 +15,7 @@ import (
 var DB *pgxpool.Pool
 
 func Setup() (err error) {
-	DB, err = pgxpool.Connect(context.Background(), fmt.Sprintf(`postgres://%s:%s@host.docker.internal:6432/%s`, viper.GetString("postgres_user"), viper.GetString("postgres_password"), viper.GetString("postgres_db")))
+	DB, err = pgxpool.New(context.Background(), fmt.Sprintf(`postgres://%s:%s@host.docker.internal:6432/%s`, viper.GetString("postgres_user"), viper.GetString("postgres_password"), viper.GetString("postgres_db")))
 	if err != nil {
 		zap.S().Fatalf("failed to connect to database %+v", err)
 		return

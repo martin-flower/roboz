@@ -65,6 +65,37 @@ info:
   title: roboz cleaner
   version: "1.0"
 paths:
+  /developer-test/enter-path:
+    post:
+      consumes:
+      - application/json
+      description: post instructions as robot path, return 200 and some interesting
+        results
+      parameters:
+      - description: instructions
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.EnterPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: response
+          schema:
+            $ref: '#/definitions/handlers.EnterResponse'
+        "400":
+          description: ok
+          schema:
+            type: string
+        "500":
+          description: ok
+          schema:
+            type: string
+      summary: post cleaning instructions
+      tags:
+      - enter
   /health:
     get:
       description: returns 200 if service is healthy (shallow health)
@@ -72,9 +103,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "500":
-          description: ""
+          description: Internal Server Error
       summary: service health status
       tags:
       - health check
@@ -108,35 +139,4 @@ paths:
       summary: return list of cleanings
       tags:
       - list
-  /developer-test/enter-path:
-    post:
-      consumes:
-      - application/json
-      description: post instructions as robot path, return 200 and some interesting
-        results
-      parameters:
-      - description: instructions
-        in: body
-        name: message
-        required: true
-        schema:
-          $ref: '#/definitions/handlers.EnterPost'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: result of instructions
-          schema:
-            $ref: '#/definitions/handlers.EnterResponse'
-        "400":
-          description: ok
-          schema:
-            type: string
-        "500":
-          description: ok
-          schema:
-            type: string
-      summary: post cleaning instructions
-      tags:
-      - enter
 swagger: "2.0"

@@ -23,9 +23,9 @@ import (
 // @Accept json
 // @Param message body handlers.EnterPost true "instructions"
 // @Produce json
-// @Success 200 {object} handlers.EnterResponse true "result of instructions"
-// @Failure 400 {string}
-// @Failure 500 {string}
+// @Success 200 {object} handlers.EnterResponse "response"
+// @Failure 400 {string} string "ok"
+// @Failure 500 {string} string "ok"
 // @Router /developer-test/enter-path [post]
 func Enter(ctx *fiber.Ctx) (err error) {
 

@@ -16,9 +16,9 @@ import (
 // @Produce json
 // @Param offset query int false "how many cleanings to skip - defaults to 0"
 // @Param limit query int false "maximum number of cleanings - defaults to 10 - maximum is 20"
-// @Success 200 {object} handlers.ListResponse true "list of instructions"
-// @Failure 400 {string}
-// @Failure 500 {string}
+// @Success 200 {object} handlers.ListResponse "list of instructions"
+// @Failure 400 {string} string "ok"
+// @Failure 500 {string} string "ok"
 // @Router /list [get]
 func List(c *fiber.Ctx) (err error) {
 	zap.S().Info("roboz list")

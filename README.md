@@ -1,6 +1,6 @@
 # roboz cleaner
 
-example restful implementation of developer test task
+example restful implementation of developer [exercise](exercise.md)
 
 implemented in three containers:
 

@@ -1,8 +1,8 @@
 package httpserver
 
 import (
-	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 	"github.com/martin-flower/roboz-web/config"
 	"github.com/martin-flower/roboz-web/handlers"
 	"github.com/spf13/viper"
@@ -30,7 +30,7 @@ func (srv Server) Setup() {
 
 	// documentation: default landing page
 	srv.app.Get("/", redirectToSwagger)
-	srv.app.Get("/docs/swagger/*", swagger.Handler)
+	srv.app.Get("/docs/swagger/*", swagger.HandlerDefault)
 }
 
 func redirectToSwagger(c *fiber.Ctx) error {

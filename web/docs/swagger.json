@@ -12,6 +12,52 @@
     "host": "localhost:5000",
     "basePath": "/",
     "paths": {
+        "/developer-test/enter-path": {
+            "post": {
+                "description": "post instructions as robot path, return 200 and some interesting results",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enter"
+                ],
+                "summary": "post cleaning instructions",
+                "parameters": [
+                    {
+                        "description": "instructions",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.EnterPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "response",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.EnterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "returns 200 if service is healthy (shallow health)",
@@ -24,10 +70,10 @@
                 "summary": "service health status",
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK"
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -61,52 +107,6 @@
                         "description": "list of instructions",
                         "schema": {
                             "$ref": "#/definitions/handlers.ListResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/developer-test/enter-path": {
-            "post": {
-                "description": "post instructions as robot path, return 200 and some interesting results",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "enter"
-                ],
-                "summary": "post cleaning instructions",
-                "parameters": [
-                    {
-                        "description": "instructions",
-                        "name": "message",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handlers.EnterPost"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "result of instructions",
-                        "schema": {
-                            "$ref": "#/definitions/handlers.EnterResponse"
                         }
                     },
                     "400": {

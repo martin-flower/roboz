@@ -5,7 +5,7 @@
 # multistage build based on example in https://raw.githubusercontent.com/cloud-native-go/examples/main/ch05/ch05_0X_dockerbuild/Dockerfile
 
 # 1 -- -- -- go tests
-FROM golang:1.17 as test
+FROM golang:1.20.4 as test
 
 WORKDIR /testdir
 
@@ -24,7 +24,7 @@ RUN go test -timeout 90s -v ./...
 
 
 # 2 -- -- -- compile go source to binary
-FROM golang:1.17 as build
+FROM golang:1.20.4 as build
 
 # copy the source files from the host
 COPY . /src
